@@ -1,0 +1,10 @@
+.Preview-notice {
+    height: 100%;
+    text-align: center;
+    display: flex;
+}
+
+.Preview-notice p, .Preview-notice-inner {
+    margin: auto;
+    color: #808080;
+}

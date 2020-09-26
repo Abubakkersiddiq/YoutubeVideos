@@ -2,18 +2,19 @@
   "name": "youtubereact",
   "version": "0.1.0",
   "private": true,
-  "homepage":"http://Abubakkersiddiq.github.io/YoutubeVideos",
+  "homepage": "http://Abubakkersiddiq.github.io/YoutubeVideos",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.3"
+    "react-scripts": "3.4.3",
+    "shards-react": "^1.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
-    "predeploy":"npm run build",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",

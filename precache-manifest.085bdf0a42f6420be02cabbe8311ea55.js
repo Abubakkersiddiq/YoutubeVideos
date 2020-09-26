@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "ef8085b3562a0ad928c76c8ed14acd44",
+    "revision": "e0b7c379ed5052f94fc2129432ac494b",
     "url": "/YoutubeVideos/index.html"
   },
   {
-    "revision": "41d2ea94fa72a438279e",
-    "url": "/YoutubeVideos/static/css/main.5f361e03.chunk.css"
+    "revision": "b7726526471d4cbf0820",
+    "url": "/YoutubeVideos/static/css/main.523f09c5.chunk.css"
   },
   {
     "revision": "6f040572e0fc7a7bfba8",
@@ -16,15 +16,15 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/YoutubeVideos/static/js/2.8ccbfc15.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "41d2ea94fa72a438279e",
-    "url": "/YoutubeVideos/static/js/main.6909504e.chunk.js"
+    "revision": "b7726526471d4cbf0820",
+    "url": "/YoutubeVideos/static/js/main.6225dcc9.chunk.js"
   },
   {
     "revision": "8fdf8076b5dfcf77b001",
     "url": "/YoutubeVideos/static/js/runtime-main.4d02a542.js"
   },
   {
-    "revision": "5d5d9eefa31e5e13a6610d9fa7a283bb",
-    "url": "/YoutubeVideos/static/media/logo.5d5d9eef.svg"
+    "revision": "8b0303ebd295024060855f8c0a8f3c34",
+    "url": "/YoutubeVideos/static/media/logo.8b0303eb.svg"
   }
 ]);

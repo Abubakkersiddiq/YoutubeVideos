@@ -13,6 +13,7 @@ function Preview(props) {
 
     useEffect(()=>{
         setcover(props.Image);
+        settitle(props.Title);
     },[props.Image]);
 
     return (
@@ -21,10 +22,10 @@ function Preview(props) {
                 <CardHeader>Video Information</CardHeader>
                 {cover === null 
                     ? (<CardImg src="https://place-hold.it/300x200" />)
-                    : (<CardImg src={cover.url} style={{height:"250px"}} />)
+                    : (<CardImg src={cover} style={{height:"300px"}} />)
                 }
                 <CardBody>
-                    <CardTitle>{props.Title}</CardTitle>
+                    {title}
                 </CardBody>
                 
             </Card>

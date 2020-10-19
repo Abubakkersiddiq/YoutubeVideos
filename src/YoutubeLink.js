@@ -13,10 +13,19 @@ function YoutubeLink() {
     const [Title, setTitle] = useState(null);
     const [search, setsearch] = useState(true);
     // console.log(Link,Title);
+    
 
     const handleSubmit = (values) =>{
         let linkone = values.link;
-        let id = linkone.split("=")[1];
+        let id = "";
+        if(linkone.includes("youtu.be")){
+            let links = linkone.split("/");
+            id = links[3];
+        }
+        else{
+            id = linkone.split("=")[1];
+        }
+        
         axios.get(`https://www.googleapis.com/youtube/v3/videos?key=AIzaSyCQPdwWm__RUz9Hhh7GtVmmfYjTciYQxbk&part=snippet,statistics&id=${id}`)
              .then(res =>{
                   let title=res.data.items[0].snippet.localized.title;

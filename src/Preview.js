@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react';
 import './Preview.css';
 import { Card,
     CardHeader,
-    CardTitle,
     CardImg,
-    CardBody,
-    Button } from "shards-react";
+    CardBody } from "shards-react";
 
 function Preview(props) {
     const [title, settitle] = useState(props.Title);

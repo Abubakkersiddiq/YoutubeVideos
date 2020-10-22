@@ -9,9 +9,6 @@ function Overview() {
     return (
         <div>
         <Layout>
-            <Header>
-                <MenuHeader/>
-            </Header>
             <Content style={{height:"100%"}}>
                 <YoutubeLink/>
             </Content>

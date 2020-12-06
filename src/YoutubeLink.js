@@ -34,7 +34,7 @@ function YoutubeLink() {
     const handleSubmit = ()=>{
         try{
             const date = new Date().toLocaleString();
-            const newData = {TITLE:Title,LINK:form.getFieldValue('link'),"INSERTED DATE":date,"CATEGORY":form.getFieldValue('category')};
+            const newData = {TITLE:Title,LINK:form.getFieldValue('link'),"INSERTED DATE":date,"CATEGORY":(form.getFieldValue('category').toLowerCase())};
             examplefunction(newData)
         }
         catch(e){
@@ -82,12 +82,7 @@ function YoutubeLink() {
                             </Form.Item>
                             
                             <Form.Item label="Category" name="category" rules={[{required:true, message:"Category is required"}]} >
-                                <Select  placeholder="Select Category" style={{float:"left",width:150}} >
-                                    <Option value="cooking">Cooking</Option>
-                                    <Option value="Electrical">Electrical</Option>
-                                    <Option value="Mobile">Mobile</Option>
-                                    <Option value="Other">Other</Option>
-                                </Select>
+                                <Input id= 'Video_category' placeholder='Video Category' />
                             </Form.Item>
                             <Form.Item {...tailLayout}>
                                 <Button type="primary" shape="round" htmlType="submit">

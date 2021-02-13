@@ -1,6 +1,8 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import {Container,Row,Col} from 'shards-react';
 import { Form, Input, Button ,Select, message} from "antd";
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import {layout,tailLayout} from './Layout';
 import Preview from './Preview';
 import axios from 'axios';
@@ -14,6 +16,33 @@ function YoutubeLink() {
     const [form] = Form.useForm();
     const [Link,setLink] = useState(null);
     const [Title, setTitle] = useState(null);
+    const [categories, setCategories] = useState([]);
+    const [catvalue, setCatValue] = useState("");
+    const [refresh, setRefresh] = useState(true);
+    let cat = [];
+
+    useEffect(()=> {
+        let finalresult = [];
+        async function fetchData() {
+
+            const doc = new GoogleSpreadsheet('1PHe3WTWi2pgzmKiN1jyIFQH6uOilKh0YU6ZtxnGIpQ4');
+            await doc.useServiceAccountAuth(require('./credential/youtubelink-290719-5d575c675961.json'));
+            await doc.loadInfo();
+            const sheet = doc.sheetsById[0];
+            const rows = await sheet.getRows();
+            const result = [];
+            rows.map((element)=> {
+                result.push(element.CATEGORY);
+            });
+             finalresult = [... new Set(result)];
+             setCategories(finalresult);
+            
+        }
+        
+        fetchData();
+        console.log(finalresult);
+        
+    },[refresh]);
     
     const examplefunction = async(row) =>{
         try{
@@ -23,7 +52,10 @@ function YoutubeLink() {
         // console.log(doc.title);
             const sheet = doc.sheetsById[0];
             const result = await sheet.addRow(row);
-            message.success('Link Added, Please visit the Google Sheet')
+            message.success('Link Added, Please visit the Google Sheet');
+            setRefresh(!refresh);
+            form.setFieldsValue({link: "", vidTitle: ""});
+            setCatValue("");
         }
         catch (e){
             console.log("Error:",e);
@@ -31,11 +63,14 @@ function YoutubeLink() {
         }
     }
 
+    const onChange = (data) => { 
+        setCatValue(data.target.value);
+    }
     const handleSubmit = ()=>{
         try{
             const date = new Date().toLocaleString();
-            const newData = {TITLE:Title,LINK:form.getFieldValue('link'),"INSERTED DATE":date,"CATEGORY":(form.getFieldValue('category').toLowerCase())};
-            examplefunction(newData)
+            const newData = {TITLE:form.getFieldValue('vidTitle'), LINK:form.getFieldValue('link'), "INSERTED DATE":date, "CATEGORY":document.getElementById("video-category").value};
+            examplefunction(newData);
         }
         catch(e){
             console.log('Error:', e);
@@ -61,9 +96,11 @@ function YoutubeLink() {
                       let title=res.data.items[0].snippet.localized.title;
                       let thumbnail = res.data.items[0].snippet.thumbnails.high.url;
                       titleone=title;
-                      setTitle(title)
+                      setTitle(title);
+                      form.setFieldsValue({vidTitle: title});
                       setLink(thumbnail)
                         })
+            
         }
         else{
             message.error("Link field empty")
@@ -81,9 +118,21 @@ function YoutubeLink() {
                                     <Search placeholder="Link" size="middle" onSearch={handleSearch} enterButton="Search"/>
                             </Form.Item>
                             
-                            <Form.Item label="Category" name="category" rules={[{required:true, message:"Category is required"}]} >
-                                <Input id= 'Video_category' placeholder='Video Category' />
+                            <Form.Item label="VideoTitle" name="vidTitle" rules={[{required:true, message:"Title cannot be empty"}]} >
+                                <Input id= 'Video_title' placeholder='Video Title' />
                             </Form.Item>
+                            <Autocomplete
+                                id="video-category"
+                                options={categories}
+                                value={catvalue}
+                                onChange={(event, newVal)=> {
+                                    setCatValue(newVal);
+                                }}
+                                freeSolo
+                                style={{ width: 300 }}
+                                renderInput={(params) => <TextField {...params} label="Categories" variant="standard"  />}
+                                style={{marginBottom:"20px"}}
+                                />
                             <Form.Item {...tailLayout}>
                                 <Button type="primary" shape="round" htmlType="submit">
                                     Submit

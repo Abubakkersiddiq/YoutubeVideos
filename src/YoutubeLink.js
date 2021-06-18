@@ -1,25 +1,26 @@
 import React,{useState, useEffect} from 'react';
 import {Container,Row,Col} from 'shards-react';
-import { Form, Input, Button ,Select, message} from "antd";
+import { Form, message} from "antd";
 import TextField from '@material-ui/core/TextField';
+import {IconButton} from "@material-ui/core"
+import SearchIcon from '@material-ui/icons/Search';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import {layout,tailLayout} from './Layout';
+import {layout} from './Layout';
 import Preview from './Preview';
 import axios from 'axios';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
-
-
-const {Option} = Select;
-const {Search} = Input;
+import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
+import './Preview.css';
 
 function YoutubeLink() {
     const [form] = Form.useForm();
-    const [Link,setLink] = useState(null);
-    const [Title, setTitle] = useState(null);
-    const [categories, setCategories] = useState([]);
+    const [Link,setLink] = useState(undefined);
+    const [Title, setTitle] = useState(undefined);
+    const [categories, setCategories] = useState([{title:"ex1"}]);
     const [catvalue, setCatValue] = useState("");
     const [refresh, setRefresh] = useState(true);
-    let cat = [];
+    const [shrinkState, setShrinkState] = useState(false);
+    console.log(Link)
 
     useEffect(()=> {
         let finalresult = [];
@@ -34,22 +35,29 @@ function YoutubeLink() {
             rows.map((element)=> {
                 result.push(element.CATEGORY);
             });
-             finalresult = [... new Set(result)];
-             setCategories(finalresult);
+             finalresult = [...new Set(result)];
+              datarenderer(finalresult)
             
         }
         
         fetchData();
-        console.log(finalresult);
         
     },[refresh]);
+
+    const datarenderer = (input)=> {
+        const result = []
+        input.map((element) => {
+            result.push({"title":element})
+        })
+        setCategories(result)
+    }
     
     const examplefunction = async(row) =>{
         try{
             const doc = new GoogleSpreadsheet('1PHe3WTWi2pgzmKiN1jyIFQH6uOilKh0YU6ZtxnGIpQ4');
         await doc.useServiceAccountAuth(require('./credential/youtubelink-290719-5d575c675961.json'));
         await doc.loadInfo();
-        // console.log(doc.title);
+        
             const sheet = doc.sheetsById[0];
             const result = await sheet.addRow(row);
             message.success('Link Added, Please visit the Google Sheet');
@@ -63,13 +71,10 @@ function YoutubeLink() {
         }
     }
 
-    const onChange = (data) => { 
-        setCatValue(data.target.value);
-    }
     const handleSubmit = ()=>{
         try{
             const date = new Date().toLocaleString();
-            const newData = {TITLE:form.getFieldValue('vidTitle'), LINK:form.getFieldValue('link'), "INSERTED DATE":date, "CATEGORY":document.getElementById("video-category").value};
+            const newData = {TITLE:document.getElementById('vidTitle').value, LINK:document.getElementById('link').value, "INSERTED DATE":date, "CATEGORY":document.getElementById("video-category").value};
             examplefunction(newData);
         }
         catch(e){
@@ -79,9 +84,10 @@ function YoutubeLink() {
 
     const handleSearch = () =>{
         let titleone;
-        let linkone = form.getFieldValue('link');
+        // let linkone = form.getFieldValue('link');
+        let linkone = document.getElementById("link").value;
         let id = "";
-        if(linkone !==undefined){
+        if(linkone !==undefined && linkone !== ""){
 
             if(linkone.includes("youtu.be")){
                 let links = linkone.split("/");
@@ -97,6 +103,7 @@ function YoutubeLink() {
                       let thumbnail = res.data.items[0].snippet.thumbnails.high.url;
                       titleone=title;
                       setTitle(title);
+                      setShrinkState(true);
                       form.setFieldsValue({vidTitle: title});
                       setLink(thumbnail)
                         })
@@ -108,40 +115,69 @@ function YoutubeLink() {
         
         
     }
+
+
+    const theme = createMuiTheme({
+        palette:{
+            primary:{
+               main:"#ff8f00"
+            },
+        },
+    });
+
     return (
-        <div style={{marginTop:"30px"}}>
+        <div style={{marginTop:"10px"}}>
             <Container>
                 <Row>
                 <Col sm="12" lg="6">
-                        <Form name="input " {...layout} onFinish={handleSubmit} form={form}>
-                            <Form.Item label="Youtube Link" name="link" rules={[{required:true, message:"The link cannot be empty"}]}>
-                                    <Search placeholder="Link" size="middle" onSearch={handleSearch} enterButton="Search"/>
-                            </Form.Item>
-                            
-                            <Form.Item label="VideoTitle" name="vidTitle" rules={[{required:true, message:"Title cannot be empty"}]} >
-                                <Input id= 'Video_title' placeholder='Video Title' />
-                            </Form.Item>
-                            <Autocomplete
-                                id="video-category"
-                                options={categories}
-                                value={catvalue}
-                                onChange={(event, newVal)=> {
-                                    setCatValue(newVal);
-                                }}
-                                freeSolo
-                                style={{ width: 300 }}
-                                renderInput={(params) => <TextField {...params} label="Categories" variant="standard"  />}
-                                style={{marginBottom:"20px"}}
-                                />
-                            <Form.Item {...tailLayout}>
-                                <Button type="primary" shape="round" htmlType="submit">
-                                    Submit
-                                </Button>
-                            </Form.Item>
-                        </Form>
+                    <Preview Title={Title} Image={Link} />
                 </Col>
                 <Col sm="12" lg="6">
-                    <Preview Title={Title} Image={Link} />
+                        <Form name="input " {...layout} onFinish={handleSubmit} form={form}>
+                            {/* <Form.Item label="Youtube Link" name="link" rules={[{required:true, message:"The link cannot be empty"}]}>
+                                     <Search placeholder="Link" size="middle" onSearch={handleSearch} enterButton="Search"/>
+                                </Form.Item>*/}
+                            <div style={{display:"flex", marginTop:"40px"}}>
+                                <ThemeProvider theme={theme}>
+                                <TextField
+                                variant="outlined"
+                                label="Youtube Link"
+                                id="link"
+                                fullWidth
+                                />
+                                </ThemeProvider>
+                                <IconButton style={{margin:"auto", color:"#ff8f00"}} onClick={handleSearch}>
+                                    <SearchIcon/>
+                                </IconButton>
+                            </div>
+                            <ThemeProvider theme={theme}>
+                            <TextField
+                            variant="outlined"
+                            id="vidTitle"
+                            label="Video title"
+                            fullWidth
+                            value={Title}
+                            InputLabelProps={{shrink:shrinkState}}
+                            style={{margin:"20px 0px"}}
+                            />
+                            </ThemeProvider>
+                                <Autocomplete
+                                    id="video-category"
+                                    options={categories}
+                                    getOptionLabel={(option)=> option.title ? option.title : ""}
+                                    value={catvalue}
+                                    fullWidth
+                                    freeSolo
+                                    onChange={(event, newVal)=> {
+                                        setCatValue(newVal)
+                                    }}
+                                    style={{width: "100%", marginBottom:"20px"}}
+                                    renderInput={(params) => <TextField {...params} label="Category" variant="outlined"  />}
+                                />
+                                <button className="SubmitButton">
+                                Submit
+                                </button>
+                        </Form>
                 </Col>
                 </Row>
             </Container>

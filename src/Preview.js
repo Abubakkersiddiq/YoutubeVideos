@@ -1,32 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import './Preview.css';
-import { Card,
-    CardHeader,
-    CardImg,
-    CardBody } from "shards-react";
+import vector from "./images/notitle.png"
 
 function Preview(props) {
-    const [title, settitle] = useState(props.Title);
     const [cover, setcover] = useState(props.Image);
 
     useEffect(()=>{
         setcover(props.Image);
-        settitle(props.Title);
-    },[props.Image]);
+    },[props.Image, props.Title]);
 
     return (
         <div className="Preview-notice">
-            <Card className="Preview-notice-inner">
-                <CardHeader>Video Information</CardHeader>
+            <div className="Preview_imagewrapper">
                 {cover === null 
-                    ? (<CardImg src="https://place-hold.it/300x200" />)
-                    : (<CardImg src={cover} style={{height:"300px"}} />)
-                }
-                <CardBody>
-                    {title}
-                </CardBody>
-                
-            </Card>
+                    ? <img src={vector} alt="Thumbnail" style={{width:"100%", height:"100%", margin:"60px", objectFit:"contain"}}/>
+                    : <img src={cover} alt="Thumbnail" style={{width:"100%",height:"100%",objectFit:"contain"}}/>}
+            </div>
         </div>
     )
 }
